@@ -32,7 +32,7 @@ DICOMfolder
   - 00003
 
 2. The annotations should be presented in world coordinates in an excel file with the following column headers:
-'PatientID_new', 'CoordZ',  'CoordY', 'CoordX', 'Diameter [mm]', 'LesionID' (lesion id is the number of the nodule in the scan, can be always 1 when there is just one nodule per scan). The order of the columns is not important. There is a folder with an example annotation file available in this git. 
+'PatientID', 'CoordZ',  'CoordY', 'CoordX', 'Diameter [mm]', 'LesionID' (lesion id is the number of the nodule in the scan, can be always 1 when there is just one nodule per scan). The order of the columns is not important. There is a folder with an example annotation file available in this git. 
 If the names are different this can be changed in the function fetch_nodules_info_generalized from CTImagesCustomBatch. It is also important the the entries of the PatientID column correspond to the foldernames of the dicoms. If this is not the case the same function should be adopted. 
 To test the annotations / loading of data _NoduleTest.py_ can be used, which gets one scan through the batch and shows the crops it made, if the nodules are in the center of each box (boxes are shown after each other, so every 16 slices are one crop), everything is correct. Else have a look at 3. 
 
