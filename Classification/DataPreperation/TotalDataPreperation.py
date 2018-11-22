@@ -40,7 +40,7 @@ nodules_path='C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/Ann
 # Preprocessing Images--------------------------------------------------------------------------------------------
 
 
-savepath_preprocess='../ResultingData/PreprocessedImages' 
+savepath_preprocess='../../../ResultingData/PreprocessedImages' 
 
 #makes folder for all savings
 if not os.path.exists(savepath_preprocess):
@@ -80,10 +80,10 @@ for i in range(len(scan_dataset)):
 # Creating Nodule Crops ----------------------------------------------------------------------------------------------------------
 
 #read annotations, dtype makes sure that the indexing item gets read as a string, such that leading zeros are not removed from name of path
-nodules_info=pd.read_excel(nodules_path,dtype={'PatientID_new': str})
+nodules_info=pd.read_excel(nodules_path,dtype={'PatientID': str})
 
 #name of savepath for nodulecrops
-savepath_crops="../ResultingData/NoduleCrops"
+savepath_crops="../../../ResultingData/NoduleCrops"
 
 
 #create folder for savings
@@ -134,7 +134,7 @@ def flat_out_f(X):
 
 
 #define names for folders
-savepath_features='../ResultingData/NoduleFeatures' #change this lines into pe
+savepath_features='../../../ResultingData/NoduleFeatures' #change this lines into pe
 
 
 #make dataset, and give dtaset to pipeline

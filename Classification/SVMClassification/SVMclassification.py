@@ -34,8 +34,8 @@ diagnosis_path = 'C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES
 SVMpath1= '../Models/SVM_fit_bm.pickle'
 SVMpath2= '../models/SVM_fit_blungmet.pickle'
 
-diagnosis_df = pd.read_excel(diagnosis_path)
-diagnosis_df=diagnosis_df.set_index('PatientID_new')
+diagnosis_df = pd.read_csv(diagnosis_path)
+diagnosis_df=diagnosis_df.set_index('outfolder')
 
 def bin_labels(labels):
     labels_bin=np.zeros(len(labels))
@@ -55,8 +55,8 @@ if not os.path.exists(savepath):
     os.makedirs(savepath)
     
     
-    
-features_folder='../ResultingData/NoduleFeatures/*'
+features_folder='../../../NoduleFeatures/*'   
+#features_folder='../../../ResultingData/NoduleFeatures/*'
 index_train=ds.FilesIndex(path=[features_folder],dirs=True,sort=True)
 
 

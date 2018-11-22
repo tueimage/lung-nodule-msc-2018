@@ -346,7 +346,7 @@ class CTImagesCustomBatch(CTImagesMaskedBatch):
         else:
             #if necessary, adapt here the name of the patient / iterating
             #entries for PatientID should correspond to folder names of dicoms / preprocessed images
-            nodules_df = nodules.set_index("PatientID_new").astype(str)
+            nodules_df = nodules.set_index("PatientID").astype(str)
 
 
             unique_indices = nodules_df.index.unique()

@@ -26,7 +26,7 @@ data_path='D:/OnlyConv/' #folder containing for each dicom file a folder with al
 #--------------------------------------------------------------------------------------------
 
 
-savepath='../ResultingData/PreprocessedImages' 
+savepath='../../../ResultingData/PreprocessedImages' 
 
 #makes folder for all savings
 if not os.path.exists(savepath):

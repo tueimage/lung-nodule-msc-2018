@@ -39,8 +39,8 @@ def flat_out_f(X):
 
 
 #define names for folders
-crops_folder='../ResultingData/NoduleCrops' #server path
-pre_savepath='../ResultingData/NoduleFeatures' #change this lines into pe
+crops_folder='../../../ResultingData/NoduleCrops' #server path
+pre_savepath='../../../ResultingData/NoduleFeatures' #change this lines into pe
 
 
 

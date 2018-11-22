@@ -61,11 +61,11 @@ nodules_path='C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/Ann
 # ----------------------------------------------------------------------------------------------------------
 
 #read annotations, dtype makes sure that the indexing item gets read as a string, such that leading zeros are not removed from name of path
-nodules_info=pd.read_excel(nodules_path,dtype={'PatientID_new': str})
+nodules_info=pd.read_excel(nodules_path,dtype={'PatientID': str})
 
 #names of folders of preprocessed images / 
-path_data="../ResultingData/PreprocessedImages/*"
-SaveFolder="../ResultingData/NoduleCrops"
+path_data="../../../ResultingData/PreprocessedImages/*"
+SaveFolder="../../..//ResultingData/NoduleCrops"
 
 
 #create folder for savings
