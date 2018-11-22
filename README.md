@@ -26,7 +26,7 @@ DICOMfolder
 If the names are different this can be changed in the function fetch_nodules_info_generalized from CTImagesCustomBatch. It is also important the the entries of the PatientID column correspond to the foldernames of the dicoms. If this is not the case the same function should be adopted. 
 To test the annotations / loading of data _NoduleTest.py_ can be used, which gets one scan through the batch and shows the crops it made, if the nodules are in the center of each box (boxes are shown after each other, so every 16 slices are one crop), everything is correct. Else have a look at 3. 
 
-3. During loading of the DICOMS, I had to adapt the order in which the slices were loaded (descending / ascending) to get correct z-coordinates of the annotations. I am not sure whether this can differ for other sets, but this could be tried when the z-coordinate for the annotations is not correct. This parameters can be changed in load_dicom in the CTImagesCustomBatch in the following line:
+3. During loading of the DICOMS, I had to adapt the order in which the slices were loaded (descending / ascending) to get correct z-coordinates of the annotations. I am not sure whether this can differ for other sets, but this could be tried when the z-coordinate for the annotations is not correct. This parameters can be changed in _load_dicom_ in the _CTImagesCustomBatch_ in the following line:
 
 ````
 list_of_dicoms.sort(key=lambda x: int(x.ImagePositionPatient[2]), reverse=False) #change reverse parameter
