@@ -1,5 +1,4 @@
 # lung-nodule-msc-2018
-# lung-nodule-msc-2018
 
 In this github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. At the moment only the classification code is completely finished for use, the detection part will follow soon. 
 
