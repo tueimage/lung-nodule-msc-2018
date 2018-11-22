@@ -5,7 +5,14 @@ In this Github the code I developed during my master thesis is given. The purpos
 ## Data preparation
 The code for data preparation is found in the folder named this way.  The data first has to be preprocessed (_Preprocessing.py_), then crops around the nodules have to be made (_CreateNodulesCrops.py_) and at last feature extraction takes place (_FeaturesExtraction.py_). The three scripts are combined in one as: _DataPreparationCombined_, however for troubleshooting the individual files are available as well.
 
-During development of the code I used the package Radio, which is a package specifically for using CT scans & annotations for detection algorithms, and I added my own code to this package in the file _CTImagesCustomBatch.py_. There are a few points which should be noticed when using the code, dependent on the data:
+During development of the code I used the package Radio, which is a package specifically for using CT scans & annotations for detection algorithms, and I added my own code to this package in the file _CTImagesCustomBatch.py_. 
+
+````
+Khudorozhkov R., Emelyanov K., Koryagin A. RadIO library for data science research of CT images. 2017.
+https://github.com/analysiscenter/radio
+````
+
+There are a few points which should be noticed when using the code, dependent on the data:
 
 1. At the moment the script is made for DICOM files, it is also possible to load mhd files. For this see the documentation of Radio, and adapt the load function. The DICOM files of the individual slices should be saved per scan in a folder, which are all together in the main folder. Deeper data structures can give problems as the iterator over the data takes the lowest folder level as index name, this should thus not be equal for multiple scans. I used the structure below, which worked fine for all code:
 
