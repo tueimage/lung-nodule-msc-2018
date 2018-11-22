@@ -2,8 +2,15 @@
 
 In this Github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. At the moment only the classification code is completely finished for use, the detection part will follow soon. 
 
+The classification approach I used in my thesis is shown in the figure below. In the top part a neural net is trained using the LIDC-IDRI database, resulting in malignancy scores. This trained network can subsequently be used as feature extractor for a new dataset (bottom row), and these features can then be classified with a SVM. The code in this github is to apply the pretrained network to a new dataset, thus the bottom row of the figure. 
+
 ![alt text](https://github.com/tueimage/lung-nodule-msc-2018/blob/master/ClassificationOverview.png)
 
+The trained neural network (3D conv net) can be downloaded from figshare, and should be put in the folder Models, in order for everything to work:
+
+````
+https://figshare.com/articles/Trained_Neural_Network_on_Lung_Nodules/7376360
+````
 
 ## Data preparation
 The code for data preparation is found in the folder named this way.  The data first has to be preprocessed (_Preprocessing.py_), then crops around the nodules have to be made (_CreateNodulesCrops.py_) and at last feature extraction takes place (_FeaturesExtraction.py_). The three scripts are combined in one as: _DataPreparationCombined_, however for troubleshooting the individual files are available as well.
