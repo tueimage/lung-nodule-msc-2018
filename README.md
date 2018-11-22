@@ -9,7 +9,7 @@ The classification approach I used in my thesis is shown in the figure below. In
 The trained neural network (3D conv net) can be downloaded from figshare, and should be put in the folder Models, in order for everything to work:
 
 ````
-[https://figshare.com/articles/Trained_Neural_Network_on_Lung_Nodules/7376360](https://figshare.com/articles/Trained_Neural_Network_on_Lung_Nodules/7376360)
+{https://figshare.com/articles/Trained_Neural_Network_on_Lung_Nodules/7376360}(https://figshare.com/articles/Trained_Neural_Network_on_Lung_Nodules/7376360)
 ````
 
 ## Data preparation
