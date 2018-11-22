@@ -1,0 +1,21 @@
+Pyton 3.6
+
+Packages:
+numpy 1.14.3
+pandas 0.23.0
+pydicom 1.1.0
+blosc 1.5.1
+llvmlite 0.23.1
+numba 0.38.0
+aiofiles 0.3.2
+SimpleITK 1.1.0
+scipy 1.1.0
+scikit-image 0.13.1
+dill 0.2.8.1
+scikit-learn 0.20.0
+tqdm 4.15.0
+keras 2.2.4
+
+
+
+radio 		pip install git+https://github.com/analysiscenter/radio.git
