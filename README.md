@@ -3,7 +3,7 @@
 In this github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. At the moment only the classification code is completely finished for use, the detection part will follow soon. 
 
 ## Data preperation
-The code for classification is found in the folder named this way. The data first has to be preprocessed, then crops around the nodules have to be made and at last feature extraction takes place. The three scripts are combined in one as: DataPreparationCombined, however for troubleshooting the individual files are available as well.
+The code for dataprepration is found in the folder named this way.  The data first has to be preprocessed (_Preprocessing.py_), then crops around the nodules have to be made (_CreateNodulesCrops.py_) and at last feature extraction takes place (_FeaturesExtraction.py_). The three scripts are combined in one as: _DataPreparationCombined_, however for troubleshooting the individual files are available as well.
 
 During development of the code I used the package Radio, which is a package specifically for using CT scans & annotations for detection algorithms, and I added my own code to this package in the file CTImagesCustomBatch. There are a few points which should be noticed when using the code, dependent on the data:
 
@@ -32,9 +32,8 @@ TotalDataPreperation --> If this gives errors, check the seperate scripts (Prepr
 ````
 
 # SVM classification
-Next, the feature vectors can be classified with SVM. The script SVMclassification can be used for this. For the classification an excel file with diagnosis is necessary, with the columns 'scannum', 'labels', 'patuid'. Also from this file an example is available. The patuid parameters should have a unique number for each patient, if all scans are from different patients, this number can be the same as the scannum. 
+Next, the feature vectors can be classified with SVM. The script _SVMclassification.py_ (in folder SVMClassification) can be used for this. For the classification an excel file with diagnosis is necessary, with the columns 'scannum', 'labels', 'patuid'. Also from this file an example is available. The patuid parameters should have a unique number for each patient, if all scans are from different patients, this number can be the same as the scannum. 
 
-In this script SVM is applied on two group divisions: benign / malignant and benign / lung / malignant. The script results in dataframes with the metrices from the crossvalidation, as well as predictions from the crossvalidations (to make confusion matrices). 
-A prefitted SVM model is also applied to the data, which results in predictions for each sample. These are also saved in the folder prefitted. 
+In this script SVM is applied on two group divisions: benign / malignant and benign / lung / malignant. The script results in dataframes with the metrices from the crossvalidation, as well as predictions from the crossvalidations (to make confusion matrices). These are saved in the folder 'Final_Results'. A prefitted SVM model is also applied to the data, which results in predictions for each sample. These are also saved in the folder 'prefitted'.  
 
 If you have any questions regarding the code or want to run it on your own database, I am happy to help with any problems. I would also be very interested in how the method performs on other datasets.
