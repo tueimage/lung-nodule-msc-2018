@@ -49,7 +49,7 @@ TotalDataPreperation --> If this gives errors, check the separate scripts (Prepr
 ````
 
 # SVM classification
-Next, the feature vectors can be classified with SVM. The script _SVMclassification.py_ (in folder SVMClassification) can be used for this. For the classification an excel file with diagnosis is necessary, with the columns 'scannum', 'labels', 'patuid'. Also from this file an example is available. The 'patuid' parameters should have a unique number for each patient, if all scans are from different patients, this number can be the same as the scannum. 
+Next, the feature vectors can be classified with SVM. The script _SVMclassification.py_ (in folder SVMClassification) can be used for this. For the classification an excel file with diagnosis is necessary, with the columns 'scannum', 'labels', 'patuid'. Also from this file an example is available. The 'patuid' parameters should have a unique number for each patient, if all scans are from different patients, this number can be the same as the scannum. The labels of the groups should be one of: 'benign', 'metastases', 'lung'. Other labels are possible but this then needs to be adapted in the main script _SVMclassification.py_, in the function _bin_labels()_.
 
 In this script SVM is applied on two group divisions: benign / malignant and benign / lung / malignant. The script results in dataframes with the metrices from the crossvalidation, as well as predictions from the crossvalidations (to make confusion matrices). These are saved in the folder 'Final_Results'. A prefitted SVM model is also applied to the data, which results in predictions for each sample. These are also saved in the folder 'prefitted'.  
 
