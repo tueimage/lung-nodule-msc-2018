@@ -2,6 +2,9 @@
 
 In this Github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. At the moment only the classification code is completely finished for use, the detection part will follow soon. 
 
+![alt text](https://raw.githubusercontent.com/tueimage/lung-nodule_msc-2018/master/ClassificationOverview.png)
+
+
 ## Data preparation
 The code for data preparation is found in the folder named this way.  The data first has to be preprocessed (_Preprocessing.py_), then crops around the nodules have to be made (_CreateNodulesCrops.py_) and at last feature extraction takes place (_FeaturesExtraction.py_). The three scripts are combined in one as: _DataPreparationCombined_, however for troubleshooting the individual files are available as well.
 
