@@ -14,6 +14,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import cross_validate
 from sklearn.model_selection import permutation_test_score
 from sklearn import svm
+import sklearn
 
 def load_features(index, diagnosis):
     # use this function if pca is already applied before
@@ -42,21 +43,20 @@ def load_features(index, diagnosis):
 
 def get_predictions_cv(features,labels, groups, Cnum):
     classifier= svm.LinearSVC( C=Cnum, loss='hinge', max_iter=20000, class_weight='balanced')
-    svm.LinearSVC(C=Cnum , max_iter=50000,loss='hinge', class_weight='balanced')
     folds=GroupKFold(n_splits=10)
     total_perf=[]
     for train_index, test_index in folds.split(features,labels,groups): #gaat er twee keer doorheen , waarby train/test flippe
         X_train, X_test = features[train_index], features[test_index]
         Y_train, Y_test = labels[train_index], labels[test_index]
         
+       
         svm_fit=classifier.fit(X_train,Y_train)
         labels_pred=svm_fit.predict(X_test)
-        
-        perform_ar=np.array(Y_test,labels_pred)
+        perform_ar=np.vstack((Y_test,labels_pred))
         
         total_perf.append(perform_ar)
             
-    return total_perf 
+    return total_perf
         
         
 def load_features_diam(index, diagnosis,nodule_info):

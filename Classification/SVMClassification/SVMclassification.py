@@ -124,8 +124,8 @@ with open(os.path.join(savepath,'BenignLungMetastMetr.pickle'), 'wb') as handle:
 # --------------------------------------------------------------------------------------------------------------------------
 
 #get prediction results to construct later confusion matrices with
-predictions_test1=get_predictions_cv(features_norm,labels_bm, groups_orig,Test1Dict.Cnum)
-predictions_test2=get_predictions_cv(features_norm,labels_bmetlung, groups_orig,Test2Dict.Cnum)
+predictions_test1=get_predictions_cv(features_norm,labels_bm, groups_orig,Test1Dict['Cnum'])
+predictions_test2=get_predictions_cv(features_norm,labels_bmetlung, groups_orig,Test2Dict['Cnum'])
         
 #save results from predictions
 with open(os.path.join(savepath,'BenignMalignantPred.pickle'), 'wb') as handle:
@@ -135,7 +135,7 @@ with open(os.path.join(savepath,'BenignLungMetastPred.pickle'), 'wb') as handle:
     pickle.dump(predictions_test2, handle)
 
 
-# Now apply prefitted models on own data -------------------------------------------------------
+# Now load and apply prefitted SVM models on new data -------------------------------------------------------
     
 SVM_bm=pickle.load((open(SVMpath1, 'rb')))
 prediction_bm= SVM_bm.predict(features_norm)
@@ -163,17 +163,3 @@ with open(os.path.join(savepath,'prefitted', 'Labels_BenignLungMet.pickle'), 'wb
 
 # ---------------------------
     
-#Cnum=30
-#    
-#clf = svm.LinearSVC(C=Cnum , max_iter=200000,loss='hinge', class_weight='balanced')
-#svm_fit1=clf.fit(features_norm, labels_bm)
-#
-#svm_fit2=clf.fit(features_norm, labels_bmetlung)
-#
-#pred1=svm_fit1.predict(features_norm)
-#pred2=svm_fit2.predict(features_norm)
-#
-#
-#
-#with open(os.path.join('../Models', 'SVM_fit_blungmet.pickle'), 'wb') as handle:
-#    pickle.dump(svm_fit2, handle)
