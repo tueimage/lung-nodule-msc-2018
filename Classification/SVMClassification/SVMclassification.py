@@ -91,7 +91,7 @@ Clist={'C':[0.01,0.03,0.1,0.3,1,3,10,30,100,300,1000]}
 #do both tests for single nodules =-----------------------------------------------------------------------------
 print('Start Single Nodule Scoring')
 print('Start test1')
-f1micro, f1macro, Cnum, d_fin, pvalue= optimize_and_cv(features_norm, labels_bm, groups_orig, Clist,permut=False)
+f1micro, f1macro, Cnum, d_fin, pvalue= optimize_and_cv(features_norm, labels_bm, groups_orig, Clist,permut=True)
 Test1Dict={}
 Test1Dict['f1_micro_cv']=d_fin['test_accuracy']
 Test1Dict['f1_macro_cv']=macroCV=d_fin['test_f1macro']
@@ -102,7 +102,7 @@ Test1Dict['f1macro']=f1macro
 
 
 print('Start test2')
-f1micro, f1macro, Cnum, d_fin, pvalue= optimize_and_cv(features_norm, labels_bmetlung, groups_orig, Clist,permut=False)
+f1micro, f1macro, Cnum, d_fin, pvalue= optimize_and_cv(features_norm, labels_bmetlung, groups_orig, Clist,permut=True)
 Test2Dict={}
 Test2Dict['f1_micro_cv']=d_fin['test_accuracy']
 Test2Dict['f1_macro_cv']=macroCV=d_fin['test_f1macro']
