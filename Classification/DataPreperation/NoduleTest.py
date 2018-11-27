@@ -23,7 +23,7 @@ nodules_path='C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/Ann
 data_path='D:/OnlyConv'
 
 #get nodule info, the dtype preserves the leading zeros to to get folder names and this name equal, if  numbers are used this is not necessary
-nodules_utrecht=pd.read_excel(nodules_path,dtype={'PatientID_new': str})
+nodules_utrecht=pd.read_excel(nodules_path,dtype={'PatientID': str})
 
 
 #make pipeline to load, and get the annotations
