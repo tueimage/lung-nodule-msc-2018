@@ -1,0 +1,507 @@
+# Weekly meetings
+
+Copy/paste and fill in the template below each week, BEFORE coming to the weekly meeting with your supervisor. 
+
+## Template
+
+10-01: Final presentation
+21-12 : Hand in final version Thesis
+
+### Date: 20-11-2018 
+
+What did you achieve this week?
+•	Wrote quite some parts (divided methods now into methods and experiments, some difficulty with what where)
+•	Tried spectral resconstructions --> emailed arnold for this, suggested using compton scattering vs photoelectric effect seperation of images, add these as feature vectors instead of mono-energetic images. Other reconstructions are harder to make
+•	Implemented spectral seperation of images in PE and CS
+•	Added this as feature vector --> results should be ready at meeting
+•	Started making figure workflow image classification
+
+What did you struggle with?
+•	How to split up exactly method / experiments
+•	spectral reconstructions --> solved now
+
+What would you like to work on next week?
+•	Finish getting results from CS / PE reconstructions
+•	Wrap data analysis up
+•	Write everything: Thursday 6 december 1st version
+
+Where do you need help?
+•	In methods also active voice. As in we do this because we expect, or because it is expected?
+
+### Data: 13-11-2018
+What did I do:
+* Permutation test
+	- All scores are on itself significant except for crc / melanoma
+* STudent t-test vs 5x2 CV
+	- No significant differences
+* Late fusion
+	- Probabilities hard to implement, only distances
+	- Took majority vote --> no results
+* System not really able to interpret spectral info
+	- Use spectral reconstructions
+	- Or add level of uptake as feature oid.
+* Classification with num nodules, mean size, std size did not yield significant results
+
+What do I plan:
+* Spectral Reconstructions
+* validation detection --> doesn't look to good
+
+Problems:
+* Classification only works until 3.2 cm, circa 20 nodules are bigger so these are now just seen as blobs
+
+### Date: 06-11-2018: Veronika holidays
+
+### Data: 02 November:
+What did you achieve:
+* Classification
+	- Min / max / mean elementwise
+	- Distance Metrics + SVM (minmin, meanmin, maxmin)
+* miSVM not really suitable as it needs a positive/ negative label, only suitable for benign / malignant
+Parameters SVM
+	- Balanced C
+	- 5 fold CV
+	- L2 normalization
+	- C in range
+* Performed classification for spectral
+* Looked into nodule characteristics
+* Get more insight in output neural net: Layer wise relevance propagation. Work on viz more.
+
+### Data: 24 Oktober: (with Pim and Josien) 
+What did you achieve:
+* Classification on LIDC-IDRI finished
+	- Regression target between 1-5
+	- Good results: 0.448 vs 91.22% accuracy
+* Utrecht data was not correct, convs were wrong, now corrected
+* Used pretrained network as feature extractor and vizualized the 1e three dimensions
+	- Per nodule and per scan
+	- Between metastases no differences
+	- Benign malignant possible to differentiate
+* applying SVM to these features
+
+Planning:
+* Accuracy SVM determine per nodule and per scan
+	- Combination of nodules per scan with different methods: distances / elemenwise
+* Add spectral views: High + Low energie, early vs late fusion
+
+### Data: 15 Oktober:
+
+### Data: 09 Oktober:
+
+### Date: 02-10-2018: Holidays
+
+
+### Data 26-09 (with Pim and Josien)
+What did you achieve this week:
+* Detection good enough
+* Classification now in progress
+	- Detection features does not work
+	- Make regression model for malignancy --> regression
+	- Looking for suitable network now
+	- Use this as feature extractor on nodules in spectral scans and cluster these with a simple classifier
+* Wrote large part of report (Introduction, related work, methods, for detection part
+
+
+### Data: 13-09-2018 Midterm Presentation
+
+### Date: 03-09-2018
+
+What did you achieve this week?
+•	Detection almost finished : need to run it on testset
+•	Classification on LIDC_IDRI: mean validation error = 0.57
+o	Regression output
+•	Started writing everythin about detection part (want to focus on that this week)
+•	Got data again, wednseday meeting with colin to get it on computer
+
+What did you struggle with?
+•	Got classes data utrecht: 21 melanoma, 48 lung, 30 crc.
+•	Idee: devide in benign / malignant and see whether there spectral CT makes a difference
+
+What would you like to work on next week?
+•	Writing
+
+Where do you need help?
+•	How to let Pim annotate best
+•	Check: graphs in report should be on test set right? The set which I did not see before
+•	Number or pages max of end report?
+
+
+### Data: 28-08-2018
+
+#### What did you achieve this week?
+* Results of detection
+* Analyzed False Positives: Bronchiën, borders, dark nodules, small nodules
+* Tested on Utrecht Data --> no weird results, but not yet possible to validate, masses wont be recognized
+
+#### What did you struggle with?
+* Getting annotation software to work
+
+#### What would you like to work on next week?
+* Train malignancy estimator on lidc-idri database (almost there)
+* Lock conv layers, en train with new FC layers on spectral dataset
+
+#### Where do you need help?
+### Date: 21-08-2018
+
+#### What did you achieve this week?
+* Offline data augmentation --> way faster
+
+* All data is now on Pim's computer and on mine
+* Did some tests with network structure again, encountered sometimes problems with divergence of error 
+* Looked into which nodules are badly detected
+ - dark nodule (once)
+ - very small / vague nodules
+ - close to wall 
+ - close to bronchiën (could be because of too small fov)
+* Thought about classification strategy
+
+#### What did you struggle with?
+* Some divergence issues while training
+* GPU can't be installed on computer
+
+#### What would you like to work on next week?
+* Finalize training detector
+* Apply this one data Utrecht (but would need GPU for this)
+* Start classification
+
+#### Where do you need help?
+
+
+
+#### Any other topics: 
+
+
+
+
+### Date: 14-08-2018
+
+#### What did you achieve this week?
+* Did all preprocessing again, removed some errors in segmentations etc.
+* Get quite good results now
+* Varied quite some runs
+* Combined two scales
+* Added irrelevant findings
+* Checked where model makes mistakes
+
+
+
+#### What did you struggle with?
+* Treshold is very close to 1 to get good results for fp / sensitivity rate
+* Get good enough sensitivity for lower fp rates, but this might be less important for this particular application
+* scaling before cropping is better, considering variation, but this takes very long, maybe look at this again
+
+#### What would you like to work on next week?
+
+
+#### Where do you need help?
+
+* How to proceed, quite some options but can't do everything
+          - Try out other model (feature pyramid) for detection
+          - Optimize current model more (training options / train for different observers)
+          - Focuss only on classification now
+
+#### Any other topics: 
+* Data in Utrecht should be ready by this week, hopefully Pim can than annotated the nodules quite fast, then I can really start of with this data. 
+
+
+
+
+### Date: 03-07-2018
+
+#### What did you achieve this week?
+
+* Found out how to run correctly on GPU's on server, run time now only one hour :D Butt not possible for Utrecht data
+* Got a test samples accuracy of 0.984 (so from only the patches)
+* Implemented fully convolutional Switch and Stich evaluation
+
+* Had a look at intensity histograms
+
+
+#### What did you struggle with?
+* Mailed Pim once again, we will try another way now because Wouter Veldhuis didn't reply
+
+
+#### What would you like to work on next week?
+* Evalating full images 
+* Do more runs
+
+#### Where do you need help?
+
+
+#### Any other topics: 
+* Leiden: hoe uitgebreid moet voorbeeldcode zijn, voornamelijk om in te laden of ook al bijvoorbeeld om nodules te croppen
+
+### Date: 26-06-2018
+
+#### What did you achieve this week?
+
+* Took part of negative samples from LunaCandidate List
+* Looked into evaluation, two options:
+          - Sliding window (+- 25 minutes / scan)
+          - Fully convolutional Network with shift and stitch mechanism (way faster)
+* Negative Samples only inside segmentation (not in bounding box anymore)
+* Had a first look at scans in Utrecht (2 were extracted)
+
+
+#### What did you struggle with?
+
+
+
+#### What would you like to work on next week?
+* Training with new data and fully convolutional structure
+* Add hard negative mining 
+
+#### Where do you need help?
+
+
+#### Any other topics: 
+* Presentation Leiden Workshop / scripts
+* Evaluatie / Feedback : Hoe gaat het tot nu toe? Ik ben wel benieuwd hoe je vindt dat het gaat en wat ik zou kunnen verbeteren / veranderen. 
+
+### Date: 19-06-2018
+
+#### What did you achieve this week?
+
+* Implemented the 'calculate loss every n iterations for larger batch'
+* Implemented predict on scan: Instead of average predictions over overlapping patches, take the maxium
+* Did again some test runs, but not very succesfull yet, lots of FP (whole lung)
+* Changed sampling of negatives: inside bounding box of segmentation, and check for nodules in this sample
+* Meeting with Pim and Arnold
+
+
+#### What did you struggle with?
+* Training takes very long
+* Predictions are very bad yet (not completely unexpected)
+* What to do next, preprocessing was quite straightforward, and training now is somehow more complex
+
+
+#### What would you like to work on next week?
+* Training with new negative samples
+
+#### Where do you need help?
+* My models are now predicting to much positives, can I now for example use a trained model and train this further with negatives or do I have to retrain whole model
+
+#### Any other topics: 
+* Pim suggested to annotated nodules in Ct scans if it are not to many, maybe look into making a viewer / applet for this purpose which saves keystrokes etc
+
+
+
+
+### Date: 12-06-2018
+
+#### What did you achieve this week?
+
+* Finished preprocessing workflow for all seven subsets
+* Cleaned up preprocessing code
+* Added data augmentation (variance, left / right flipping and scaling)
+* Added stepwise decreasing learning rate
+* Added prediction on scan: for now results in 3D image with for each patch a prediction value between 0 and 1, did not add comparison with ground truth yet
+* Prediction on scan very slow --> increased patch size to 32x64x64 instead of 16x32x32
+* Saves plots and model after each N-epochs
+* Make plots with python, also on server
+* Did test runs with different models / learing rates (see word document (performed tests) with resulting plots)
+
+
+#### What did you struggle with?
+* Training of model, loss keeps being very noisy 
+* with small patchsize prediction on scan takes very long, idea to increase patch size (seems also better size) but now training is extremely slow. Don't really know how to balance this
+* Prediction on scans, even with larger patch size takes really long, do this only at end or better for every test (for all validation images)
+
+
+#### What would you like to work on next week?
+* Improve training
+* If data in Utrecht is ready, start working on that data
+
+#### Where do you need help?
+* Training
+
+#### Any other topics: 
+*
+
+### Date: 05-06-2018
+
+#### What did you achieve this week?
+
+* Did introduction training in Utrecht, got my computer there now
+* Created viewer to extract middle slices of all images and segmentations, and view these in once
+* Segmented subset 1 tm 3, checked these segmentations with viewer
+* Added training and validation accuray, now only for created patches, not yet for whole image
+* Started on validation for whole image
+* Trained on subset 0, as well as on 0/1/2/3 with lower learning rate than before
+* Make seperate class for all additions to package
+
+
+#### What did you struggle with?
+* Add class to package --> problems with importing functions, in the end there was some info about this in the documentation -.-
+* Memory error when inspecting all segmentations --> fixed this by now importing only middle slice
+
+
+#### What would you like to work on next week?
+* Validate on whole image
+* Do more training, different architectures etc
+* Tidy all scripts, finish workflow for preprocessing
+
+
+#### Where do you need help?
+* How to validate exactly on whole image, as now I am just training a classification (yes/no) problem and not yet detection
+* Started dividing image in patches, however one image has now 6750 patches so this takes ages
+
+#### Any other topics: 
+* Data in Utrecht has been classified, will be exported by someone there 
+* Stay with luna dataset for now, add new annotations later
+
+### Date: 28-05-2018
+
+#### What did you achieve this week?
+
+* Added general part to project description
+* Adapted segmentations again. The one I used at first (from Kaggle fora) did not work in all cases, and the one of the project of Timo did also not work always and was slow. So I added some changes and now it works for subset0 (I checked all of them manually to be sure)
+* Added validation part to generating crops and to training
+* Started training on subset0, didnot work, noticed that there were still some errors in data (see point 2) so changed these first
+* Tried network of Julian, but this didnt seem to do anything
+* Fixed some other issues with data generation
+* Downloaded all other subset, but for now I will stay with subset0
+* Generated all correct crops for subset 0, trained network on subset 0
+
+#### What did you struggle with?
+* Fix segmentations, but I think they work now!
+* Get model to train
+
+
+
+#### What would you like to work on next week?
+* Make seperate class for all changes to package ( in order to make it public in the end)
+* Train model 
+* Get non-nodule crops mostly in lung (so not only background samples)
+* Start in Utrecht (friday introduction training)
+* Extract data there 
+* Add accuracy determination on validation set, so final accuarcy
+
+
+#### Where do you need help?
+
+* (Training, but I think once my data is correctly proprocessed this might already help )
+
+#### Any other topics: 
+* I subscribed for the workshop in Leiden :)
+
+
+--------------------------------------------------------------------------------------------
+### Date: 22-05-2018
+
+#### What did you achieve this week?
+
+* Implemented adaption of spacing to work for segmented images
+* Trained model on  mini dataset of seven patches, did get an decreasing loss to 0 ( completely overfit but now I know it is able to learn something)
+* Was in Utrecht to observe the classification based on the reports and had a look at some scans
+
+
+#### What did you struggle with?
+
+
+
+#### What would you like to work on next week?
+* Train the model with larger dataset
+* Implement validation loss
+* Continue with data preprocessing
+* Improve segmentation
+
+
+#### Where do you need help?
+
+* Difficulty getting my research question clear. As we are looking in spectral CT, but in the end we are developing a classification method which is not really spectral CT specific. So maybe extra dataset of non-spectral CT would be usefull to compare performance of model on both sets (but this is maybe a bit much to ask)
+* How to validate nodule detector --> No annotations available
+
+#### Any other topics: 
+* Dataset in Utrecht will take quite some time to get right, a lot of things which can be wrong with the data and have to be checked / adapted
+* Wouter van Amsterdam is doing in his PhD something comparable, he gave me this link to some additional datasets: https://wiki.cancerimagingarchive.net/
+
+----------------------------------------------------------------------
+
+## Template
+
+### Date: 15-05-2018
+
+#### What did you achieve this week?
+
+* Implemented first network using Keras (VGG like)
+* Got training workflow working (no succesfull training yet, but code is able to supply batches, and use these to train)
+* Segment lung tissue 
+* Added segmentation to batch class, in order to do segmentation in pipeline
+* Add data augmentation, but only rotation works for now
+
+#### What did you struggle with?
+
+* Add new function to pipeline 
+* How to check if code works for training
+
+#### What would you like to work on next week?
+* Study some existing architectures (VGG, RESNET, UNet etc)
+* Performing data augmentation (applying variance, eventually adding false positives to set)
+* Investigate the datasets in more detail, untill know I didnt use all available options
+* Continue with making preprocessing and data-augmentation workflow/code
+
+
+
+
+#### Where do you need help?
+
+* Perform data-augmentation before (and save it, so its the same training data each time) or on the go
+* How to see if network trains properly (first I have to get data processing right, but is there a way to see quite quickly if
+network is going to converge)
+* Are there rules of thumb for batch size / number of iterations / epochs? 
+* Should training examples be equally divided between cancer and non cancer
+
+#### Any other topics: Vragen aan Pim
+
+* Hoe kan jij zien / waaraan herken jij wat de primary tumor site is van een tumor?
+* Hoeveel data is er voor deze classificatie
+* Zou je de groepen bij de LUNA dataset in kunnen delen in grotere groepen waarvan je verwacht dat de tumor
+op plek te onderscheiden is? 
+* Misschien moment inplannen waarbij we samen scans doorkunnen nemen, en jij kunt vertellen hoe je dit zou 
+kunnen classificeren op het oog. 
+
+## Template
+
+### Date: 08-05-2018
+
+
+#### What did you achieve this week?
+
+* Did reading on LUNA challenge and Kaggle nationale science bowl
+* Did RadioPackage tutorials and investigated package code in depth
+* Written code to load images and nodule information in batches into workspace
+* Written code to obtain cancerous and non-cancerous crops of same size around nodules, and at non-nodule locations
+* Performed this for first part of Luna dataset (subset0)
+* Been thinking about structure of project and how to set up detection and classification 
+
+#### What did you struggle with?
+
+* Implementation of network 
+* Memory 
+* Installing right packages
+
+
+#### What would you like to work on next week?
+* Study some existing architectures (VGG, RESNET, UNet etc)
+* Implementing a simple network to start with
+* Getting more clear how to use spectral CT data
+* Performing data augmentation (applying variance, eventually adding false positives to set)
+* Determine how to handle part outside lung (segmentatation or other approach)
+* Investigate the datasets in more detail, untill know I didnt use all available options
+
+#### Where do you need help?
+
+* Implementing network
+* How to perform classification on primary tumor site --> way to little data in my opinion so I don't really have an idea how to handle this
+* How to use spectral CT for detection? --> 
+          - First train on databases, and then train this pretrained network with smaller amount of spectral CT data to obtain final                 network
+          - Interpolate energies to get more data, but does this give really more information?
+* Consider it as classification problem (is there a nodule yes or no) or as regression (returns also centre and size of nodule)? --> I would say regression is more helpfull for detection, but would like to discuss this 
+
+#### Any other topics
+
+
+
+
+### Credit
+This template is partially derived from "Whitaker Lab Project Management" by Dr. Kirstie Whitaker and the Whitaker Lab team, used under CC BY 4.0. 
