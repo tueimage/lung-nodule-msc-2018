@@ -15,45 +15,53 @@ from radio import dataset as ds
 from radio.dataset import Pipeline
 from datetime import datetime
 startTime = datetime.now()
-import CTsliceViewer as slice
+import CTsliceViewer as slices
 import seaborn as sns
 import innvestigate.utils.visualizations as ivis
 import innvestigate
+
+def make_dataset(folder):
+    index=ds.FilesIndex(path=folder,dirs=True)
+    dataset=ds.Dataset(index=index,batch_class=CTICB)
+    return dataset 
+
 
 #enter CNN load from name here
 cnn = 'path'
 path='C:/Users/s120116/Documents/Preprocessed_Images/Crops(16x32x32)CancerwithMalignancyAllSubsetsNew/subset*/training/cancer/cancer*/*'
 
 
-def make_dataset(folder):
-    index=ds.FilesIndex(path=folder,dirs=True)
-    dataset=ds.Dataset(index=index,batch_class=CTICB)
-    return dataset                
-                        
+               
+#load data into pipeline                      
 pipeline_load= Pipeline().load(fmt='blosc', components=['spacing', 'origin', 'images','masks'])
-
 
 cancer_trainset= make_dataset(path)
 sample_cancer_train=(cancer_trainset >> pipeline_load)
 
+
+#get one CT scan and extract image component
 cbatch=sample_cancer_train.next_batch(1, n_epochs=1, drop_last=True,shuffle=True)
 cim=cbatch.unpack(component='images')
 
-#load model
+#create analyzer from CNN and analyze input 
 analyzer=innvestigate.create_analyzer("lrp.epsilon", cnn)
 analysis=analyzer.analyze(cim)
-
 analysis_viz=np.squeeze(analysis)
 
-slice.multi_slice_viewer(cbatch.images)
-#slice.multi_slice_viewer(analysis_viz)
 
+
+
+slices.multi_slice_viewer(cbatch.images)
+slices.multi_slice_viewer(analysis_viz)
+
+#apply different vizualization to output
 X=ivis.gamma(analysis, minamp=0, gamma=0.5)
 new=ivis.heatmap(X,cmap_type="seismic")
 
-
 new2=sns.heatmap(X[0,8,:,:,0])
-slice.multi_slice_viewer(new[0,:,:,:,:])
+
+slices.multi_slice_viewer(new[0,:,:,:,:])
+slices.multi_slice_viewer(new2[0,:,:,:,:])
 im=new[0,8,:,:,:]
 plt.imshow(im,  vmin=0, vmax=1)
 

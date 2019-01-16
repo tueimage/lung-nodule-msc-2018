@@ -5,12 +5,8 @@ Created on Wed Jan 16 10:56:54 2019
 @author: s120116
 The CNN for the detection
 """
-from keras.optimizers import Adam, SGD
-from keras.layers import Input, Convolution3D, MaxPooling3D, UpSampling3D, LeakyReLU, BatchNormalization, Flatten, Dense, Dropout, ZeroPadding3D, AveragePooling3D, Activation
-from keras.models import Model, load_model, model_from_json
-from keras.metrics import binary_accuracy, binary_crossentropy, mean_squared_error, mean_absolute_error
 
-from keras.callbacks import ModelCheckpoint, Callback, LearningRateScheduler
+from keras.layers import  Convolution3D, MaxPooling3D,  BatchNormalization, Flatten, Dense, Dropout, Activation
 import keras
 
 

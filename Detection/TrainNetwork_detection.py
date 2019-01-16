@@ -10,8 +10,7 @@ Created on Thu May 24 09:36:22 2018
 Created on Mon May  7 10:26:00 2018
 
 @author: s120116
-In this script a chosen model is imported. Then training and testing samples are generated which are
-used to train the model.
+This script is used to train a CNN for the detection of lung nodules. As training input nodule and non-nodule crops are used.
 
 """
 import sys
@@ -20,7 +19,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-
 import numpy as np
 import keras
 from CTImagesCustomBatch import CTImagesCustomBatch as CTICB
@@ -28,16 +26,11 @@ from radio import dataset as ds
 from radio.dataset import Pipeline
 from datetime import datetime
 startTime = datetime.now()
-import random
 import CNNfile_detection as model
 #import CTsliceViewer as slice
 import matplotlib.patches as mpatches
 import os
-import keras.backend as K 
 import pandas as pd
-from radio.dataset import F
-from skimage import measure, morphology
-import time
 import tensorflow as tf
 import keras.backend.tensorflow_backend
 import Evaluate_LIDC_IDRI as im_eval
@@ -46,17 +39,18 @@ import Evaluate_LIDC_IDRI as im_eval
 gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 keras.backend.tensorflow_backend.set_session(session)
-#%%adapt these values for each run
 
 
+#input
 val_images=True #define whether validation on whole test set should be performed after training
 LUNA_test='/home/lshesse/Datasets/Preprocessed_Images/subset* - split/validate/*' 
-nodules_df = pd.read_csv('/home/lshesse/annotations.csv')
-nodules_eval=pd.read_csv('/home/lshesse/annotations_excluded.csv')
+nodules_df = pd.read_csv('/home/lshesse/annotations.csv') #nodule annotations
+nodules_eval=pd.read_csv('/home/lshesse/annotations_excluded.csv') #irrelevant findings
 
 # Define folders containing train and validation crops
 path='/home/lshesse/Datasets/Crops(32x64x64)/'
 
+#define whether augmentated samples should be used
 possible_flips=['frontback', 'leftright', 'noflips', 'updown']
 cancer_folder=[]
 for i in possible_flips:
@@ -67,13 +61,13 @@ for i in possible_flips:
 val_cancer_folder=path+'subset*/validate/cancer/*/*'
 ncancer_folder=path+'subset*/training/noncancer/*/*'
 val_ncancer_folder=path+'subset*/validate/noncancer/*/*'
-#path='/home/lshesse/' #server path
 
+#define the crop size
 crop_size=np.array([32,64,64])
 
-
+#load CNN
 cnn=model.get_net_detection(input_shape=(32,64,64,1))
-#adapt learning rate if needed
+
 
 #%%------------------------
 
@@ -91,23 +85,23 @@ def make_dataset(folder):
     dataset=ds.Dataset(index=index,batch_class=CTICB)
     return dataset                
                         
-
-def augmentdata(self): #for now, whole batch same spacing change, each scan 50% change to be flipped
-    
-    #scale whole batch with factor between 0.8 and 1.2
-    spacing=self.get(0,'spacing')
-    spacing_randomizer=lambda *args: tuple(random.uniform(0.8,1.2)* np.squeeze(spacing)) 
-    
-    self.unify_spacing_withmask(spacing=spacing_randomizer(), shape=(self.get(0,'images').shape))
-    
-    #flip left right for each of the scans in the batch seperately
-    for i in range(len(self)):
-        if np.random.choice(np.arange(2)) == 0: #50% change of flip batch
-            self[i].images=np.flip(self[i].images,2)
-            self[i].masks=np.flip(self[i].masks,2)
-         
-    return self
-
+#
+#def augmentdata(self): #for now, whole batch same spacing change, each scan 50% change to be flipped
+#    
+#    #scale whole batch with factor between 0.8 and 1.2
+#    spacing=self.get(0,'spacing')
+#    spacing_randomizer=lambda *args: tuple(random.uniform(0.8,1.2)* np.squeeze(spacing)) 
+#    
+#    self.unify_spacing_withmask(spacing=spacing_randomizer(), shape=(self.get(0,'images').shape))
+#    
+#    #flip left right for each of the scans in the batch seperately
+#    for i in range(len(self)):
+#        if np.random.choice(np.arange(2)) == 0: #50% change of flip batch
+#            self[i].images=np.flip(self[i].images,2)
+#            self[i].masks=np.flip(self[i].masks,2)
+#         
+#    return self
+#
 
 
 
@@ -162,10 +156,7 @@ ncancer_testset= make_dataset(val_ncancer_folder)
 cancer_trainset= make_dataset(cancer_folder)
 ncancer_trainset= make_dataset(ncancer_folder)                        
 
-print(len(cancer_testset))
-print(len(ncancer_testset))
-print(len(cancer_trainset))
-print(len(ncancer_trainset))
+
 #make lists for the losses
 losslist = []
 test_losslist=[]
@@ -200,9 +191,11 @@ val_freq=10 #validae every nth iteration
 eval_size=5
 #train network
 i=0
-Iterations=8000#int(180000 / cancer_batchsize) #nr of iterations for one epoch for all scales
+Iterations=8000 #nr of iterations for one epoch for all scales
 changed=False #become true if learning rate is increased
-#keep looping untill #epochs has been achieved for positive samples
+
+
+#start of actual training
 for i in range(Iterations):#int(np.around(len(cancer_trainset)*n_epochs/cancer_batchsize))):
     try:
         #generate training samples
@@ -254,8 +247,6 @@ for i in range(Iterations):#int(np.around(len(cancer_trainset)*n_epochs/cancer_b
         break
     
    
-
-
 
 #save list of losses and trained network in same folder as file
 np.savetxt(savepath+'/losslist_train.csv', losslist, delimiter=',')
@@ -312,32 +303,32 @@ def get_accuracy(predictlist, labellist):
 
 
 #use seperate pipeline for evaluation to make sure all images are used for training itself
-#sample_cancer_train_eval=(cancer_trainset >> pipeline_load)
-#sample_noncancer_train_eval=(ncancer_trainset >> pipeline_load)
+sample_cancer_train_eval=(cancer_trainset >> pipeline_load)
+sample_noncancer_train_eval=(ncancer_trainset >> pipeline_load)
 
 
 #construct all dataset pipelines again
-#sample_cancer_train=(cancer_trainset >> pipeline_load)
-#sample_noncancer_train=(ncancer_trainset >> pipeline_load)
+sample_cancer_train=(cancer_trainset >> pipeline_load)
+sample_noncancer_train=(ncancer_trainset >> pipeline_load)
 
-#sample_cancer_val=(cancer_testset >> pipeline_load)
-#sample_noncancer_val=(ncancer_testset >> pipeline_load)
+sample_cancer_val=(cancer_testset >> pipeline_load)
+sample_noncancer_val=(ncancer_testset >> pipeline_load)
 
 #label all cancer/noncancer crops from the train set
-#predictlist_pos_train, labellist_pos_train=get_predictions(sample_cancer_train, cancer_trainset, cancer_batchsize)
-#predictlist_neg_train, labellist_neg_train= get_predictions(sample_noncancer_train, cancer_trainset, cancer_batchsize)
+predictlist_pos_train, labellist_pos_train=get_predictions(sample_cancer_train, cancer_trainset, cancer_batchsize)
+predictlist_neg_train, labellist_neg_train= get_predictions(sample_noncancer_train, cancer_trainset, cancer_batchsize)
       
 #calculate accuracies for trainset
-#accuracy_train_pos=get_accuracy(predictlist_pos_train,labellist_pos_train)
-#accuracy_train_neg=get_accuracy(predictlist_neg_train,labellist_neg_train)
+accuracy_train_pos=get_accuracy(predictlist_pos_train,labellist_pos_train)
+accuracy_train_neg=get_accuracy(predictlist_neg_train,labellist_neg_train)
 
 #label all cancer/noncancer crops from the validation set
-#predictlist_pos_val, labellist_pos_val=get_predictions(sample_cancer_val, cancer_testset, cancer_batchsize)
-#predictlist_neg_val, labellist_neg_val= get_predictions(sample_noncancer_val, cancer_testset, cancer_batchsize)
+predictlist_pos_val, labellist_pos_val=get_predictions(sample_cancer_val, cancer_testset, cancer_batchsize)
+predictlist_neg_val, labellist_neg_val= get_predictions(sample_noncancer_val, cancer_testset, cancer_batchsize)
 
 #calculate accuracies for validation set
-#accuracy_val_pos=get_accuracy(predictlist_pos_val,labellist_pos_val)
-#accuracy_val_neg=get_accuracy(predictlist_neg_val,labellist_neg_val)
+accuracy_val_pos=get_accuracy(predictlist_pos_val,labellist_pos_val)
+accuracy_val_neg=get_accuracy(predictlist_neg_val,labellist_neg_val)
 
         
     

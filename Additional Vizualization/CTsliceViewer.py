@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def remove_keymap_conflicts(new_keys_set):
+
     for prop in plt.rcParams:
         if prop.startswith('keymap.'):
             keys = plt.rcParams[prop]
@@ -22,6 +23,10 @@ def remove_keymap_conflicts(new_keys_set):
                 keys.remove(key)
                 
 def multi_slice_viewer(volume, colormap='viridis'):
+    """
+    Function actually plotting the slices
+
+    """
     remove_keymap_conflicts({'j', 'k'})
     fig, ax = plt.subplots()
     ax.volume = volume
@@ -31,6 +36,10 @@ def multi_slice_viewer(volume, colormap='viridis'):
     fig.canvas.mpl_connect('key_press_event', process_key)
 
 def masks_images_viewer(image,mask,indexnum):
+    """
+    Function for plotting two volumes next to each other, navigating simulateneously through the slices
+
+    """
     remove_keymap_conflicts({'j', 'k'})
     fig, (ax1,ax2) = plt.subplots(nrows=1, ncols=2)
     ax1.volume=image

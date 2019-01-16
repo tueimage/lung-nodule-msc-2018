@@ -30,39 +30,32 @@ from radio import dataset as ds
 from radio.dataset import Pipeline
 from datetime import datetime
 startTime = datetime.now()
-#import CTsliceViewer as slices
 
 import pandas as pd
-
 import time
 from skimage import measure
 import os
-
 import tensorflow as tf
 import keras.backend.tensorflow_backend
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+#configure GPU
 gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 keras.backend.tensorflow_backend.set_session(session)
 
-
-start_time = time.clock()
-
+#determine closest bounding box of image
 def bbox2_3D(img):
-
   r = np.any(img, axis=(1, 2))
   c = np.any(img, axis=(0, 2))
   z = np.any(img, axis=(0, 1))
-
   rmin, rmax = np.where(r)[0][[0, -1]]
   cmin, cmax = np.where(c)[0][[0, -1]]
   zmin, zmax = np.where(z)[0][[0, -1]]
-
   return rmin, rmax, cmin, cmax, zmin, zmax
 
 
 
-
+#pad the image with a correct number of zeros for the sliding window approach
 def pad_for_Prediction(im, mask, crop_size, step_size):
     
     left_pad=((crop_size-step_size)/2).astype(int) #ensures left upper corner can have patch surrounding it
@@ -73,7 +66,7 @@ def pad_for_Prediction(im, mask, crop_size, step_size):
    # bounding_segm_pad=np.pad(segm,((left_pad[0],right_pad[0]),(left_pad[1],right_pad[1]),(left_pad[2],right_pad[2])),mode='constant', constant_values=(0))
     return bounding_im_pad, bounding_mask_pad
 
-
+#function to make the prediction map
 def get_prediction_map(cnn,bounding_im_pad, prediction_map, step_size, crop_size,batch_size):
         patch_list=[] #list for patches, enabling batch predictions
         patch_coords = []
@@ -85,13 +78,13 @@ def get_prediction_map(cnn,bounding_im_pad, prediction_map, step_size, crop_size
                     #extract patch
                     patch=bounding_im_pad[z*step_size[0]:z*step_size[0]+crop_size[0], y*step_size[1]:y*step_size[1]+crop_size[1],x*step_size[2]:x*step_size[2]+crop_size[2]]
                     
-                    #evaluate patch 
+                    #add patch to current batch
                     if np.unique(patch).size > 2: #if only background patch does not have to be evaluated
                         patch_list.append(patch)
                         patch_coords.append((z,y,x))
              
             
-                        if len(patch_list) % batch_size == 0: #if batch size has been reached
+                        if len(patch_list) % batch_size == 0: #if batch size has been reached, evaluate patches
                             batch_data=np.expand_dims(np.array(patch_list),4)
                             pred=cnn.predict(batch_data,batch_size=batch_size)
                             
@@ -99,17 +92,16 @@ def get_prediction_map(cnn,bounding_im_pad, prediction_map, step_size, crop_size
                                 p_z=patch_coords[i][0]
                                 p_y=patch_coords[i][1]
                                 p_x=patch_coords[i][2]
-                                prediction_map[p_z,p_y,p_x]= pred[i]
+                                prediction_map[p_z,p_y,p_x]= pred[i] # assign result to correct location in prediction map
                             
                             patch_list=[]
                             patch_coords=[]
                             
         return prediction_map
 
+#convert prediction map to prediction image of same size as initial image
 def get_prediction_image(bounding_im,prediction_map,step_size) :
-             
     prediction_im=np.zeros(bounding_im.shape)
-
     #cast predictions back to images, each prediction is for a mini_box (stepsize)
     for z in range(prediction_map.shape[0]):
         for y in range(prediction_map.shape[1]):
@@ -117,7 +109,9 @@ def get_prediction_image(bounding_im,prediction_map,step_size) :
                  prediction_im[z*step_size[0] : z  * step_size[0]+ step_size[0],y*step_size[1] : y  * step_size[1]+ step_size[1],x*step_size[2] :x  * step_size[2]+ step_size[2] ]= prediction_map[z,y,x]
     
     return prediction_im
-        
+ 
+
+#compare prediction image to actual predictions (bounding mask))          
 def verify_predictions(prediction_im,bounding_mask, treshold,FP_correction=True):
       prediction_bin=np.zeros_like(prediction_im)
       prediction_bin[prediction_im < treshold] = 0
@@ -156,23 +150,16 @@ def calc_Sensitivity(TrueDetected,MissedDetection):
             Sensitivity=TrueDetected/ (TrueDetected + MissedDetection)
         return Sensitivity
       
-def FPmining(detections, correct_labels, batch, zmin,ymin,xmin, FPminingList):
 
-    for i in range(len(detections)):
-        if (detections[i].label  not in correct_labels):
-            coords=np.array(detections[i].centroid)+[zmin,ymin,xmin]
-            FPminingList.append([''.join(batch.index.indices), coords[0],coords[1],coords[2]]) #realize coordinates with bounding box
-    return FPminingList 
-
-
-
+# function to combine everything
 def eval_on_images(path,cnn, nodules_df, crop_size = np.array([16,32,32]), step_size = np.array([8,8,8]),saveImages=False,savepath='path'):
+    #get data
     luna_index_test = ds.FilesIndex(path=path, dirs=True,sort=True)      # preparing indexing structure
-    
     luna_dataset_test = ds.Dataset(index=luna_index_test, batch_class=CTICB)
  
     if not os.path.exists(savepath):
         os.makedirs(savepath)
+    
     #this pipeline does the preprocessing and gets the ground truth for the image
     preprocessing	       =     (Pipeline()
                                   .load(fmt='blosc', components=['spacing', 'origin', 'images'] )
@@ -183,6 +170,7 @@ def eval_on_images(path,cnn, nodules_df, crop_size = np.array([16,32,32]), step_
  
     preprocess_line=(luna_dataset_test >> preprocessing) 
     
+    #possible thresholds
     treshold_list=[  0.1,0.2,0.3,0.4,0.5, 0.7, 0.8, 0.85, 0.9, 0.93, 0.95, 0.97,0.99,0.995,0.998,0.999, 0.9995,0.9998, 0.9999,1]
 
 
@@ -213,18 +201,13 @@ def eval_on_images(path,cnn, nodules_df, crop_size = np.array([16,32,32]), step_
         im_index=batch.indices
         index_list.append(str(im_index))
         
-	#crop images to bounding box to not classify to much
-   
+        #crop images to bounding box to not classify to much if segmentaiton is present
         if batch.segmentation is not None:
             zmin,zmax,ymin,ymax,xmin,xmax=bbox2_3D(batch.segmentation)
             segmentation=batch.segmentation[zmin:zmax,ymin:ymax,xmin:xmax] #extract segmentation
-    
-
-        #batch.create_mask_irrelevant() #when segmentation is no longer needed
-        
+           
             bounding_im=batch.images[zmin:zmax,ymin:ymax,xmin:xmax]
             bounding_mask=batch.masks[zmin:zmax,ymin:ymax,xmin:xmax]
-        #bounding_segm=batch.segmentation[zmin:zmax,ymin:ymax,xmin:xmax]
         
         else:
             bounding_im=batch.images
@@ -350,7 +333,7 @@ def eval_2models(folder1, folder2,savepath):
         bounding_im=np.load(folder1+ '/Image_Data'+'/bounding_im'+str(k)+'.npy')
         
     
-        prediction_im=(prediction_im_mod1+prediction_im_mod2 )/2
+        prediction_im=(prediction_im_mod1+prediction_im_mod2 )/2 #average predictions
         
              #save predicted images
         np.save( savepath+ '/'+folder+'/' + 'prediction_im'+str(k), prediction_im)
@@ -402,38 +385,32 @@ def reduced_diameters(nodules_df,nodule_info):
 
 
 def main():
-#    crop_size = np.array([16,32,32])
-#    cnn = keras.models.load_model('C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/Detection - FinalResultsLIDC-IDRI/FinalEvaluation/neuralnet_final(16x32x32)')
-#    path_images='C:/Users/linde/Documents/PreprocessedImages1008CorrectConvs/Spacing(2x1x1)/0*' 
-#    savepath= 'C:/Users/linde/Documents/Detection/Scale=3.2cm/'
-#    #nodules_eval=pd.read_csv('C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/annotations_excluded.csv')
+
     nodules_df=pd.read_excel('C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/AnnotatiesPim/nodule_data_adapted.xlsx')
     nodules_df= nodules_df.drop(["PatientID"],axis=1)
     nodules_df=nodules_df.rename(index=str, columns={"PatientID_new": "PatientID"}) #now df with correct indices
     nodules_info = pd.read_excel('C:/Users/linde/OneDrive - TU Eindhoven/TUE/Afstuderen/CSVFILES/AnnotatiesPim/diagnosis_patient_nodulesize_contrastl.xlsx')
 #
     
-    nodules_red=reduced_diameters(nodules_df,nodules_info)
-#    eval_on_images(path_images ,cnn, nodules_df, crop_size = crop_size, step_size = np.array([8,8,8]),FPminingNeed=False,saveImages=True,savepath=savepath)
-#   # predict_only(path_images, savepath,cnn, crop_size=crop_size, step_size=np.array([8,8,8]))
-#
-#    print('small scale done')
+    nodules_red=reduced_diameters(nodules_df,nodules_info) #remove certain diameters
 
+    #compute for small patch size
     crop_size = np.array([16,32,32])
     cnn = keras.models.load_model('C:/Users/linde/Documents/FinalModels/neuralnet_final(16x32x32)')
     path_images='C:/Users/linde/Documents/PreprocessedImages_Spectral/*/*conv' 
     savepath= 'D:/Detection2/Scale=3.2cm/'
    
-   # eval_on_images(path_images ,cnn, nodules_red, crop_size = crop_size, step_size = np.array([8,8,8]),saveImages=True,savepath=savepath)
+    eval_on_images(path_images ,cnn, nodules_red, crop_size = crop_size, step_size = np.array([8,8,8]),saveImages=True,savepath=savepath)
     
+    #compute for large patch size
     crop_size = np.array([32,64,64])
     cnn = keras.models.load_model('C:/Users/linde/Documents/FinalModels/neuralnet_final(32x64x64)')
     path_images='C:/Users/linde/Documents/PreprocessedImages_Spectral/*/*conv' 
     savepath= 'D:/Detection2/Scale=6.4cm/'
    
-   # eval_on_images(path_images ,cnn, nodules_red, crop_size = crop_size, step_size = np.array([8,8,8]),saveImages=True,savepath=savepath)
+    eval_on_images(path_images ,cnn, nodules_red, crop_size = crop_size, step_size = np.array([8,8,8]),saveImages=True,savepath=savepath)
     
-    # code for both scales-------------
+    # Compute both patch sizes
     savepath_32= 'D:/Detection2/Scale=3.2cm/'
     savepath_64= 'D:/Detection2/Scale=6.4cm/'
     savepath= 'D:/Detection2/BothScales/'

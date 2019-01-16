@@ -14,12 +14,12 @@ sys.path.append('C:/Users/s120116/OneDrive - TU Eindhoven/TUE/Afstuderen/lung-no
 from datetime import datetime
 startTime = datetime.now()
 import numpy as np
-
+import pandas as pd
 
 #load all necesary files
 hist_count=np.load('intensitie_counts.npy')
 hist_count_utrecht=np.load('intensitie_counts_utrecht.npy')
-xls = ExcelFile('LIDC-IDRI_MetaData.xls')
+xls = pd.read_excel('LIDC-IDRI_MetaData.xls')
 df = xls.parse(xls.sheet_names[0])
 
 
