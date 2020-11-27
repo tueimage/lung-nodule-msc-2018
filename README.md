@@ -1,6 +1,7 @@
 # Lung Nodules Classification
 
-In this Github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. At the moment only the classification code is completely finished for use, the detection part will follow soon. 
+In this Github the code I developed during my master thesis is given. The purpose of this code is to detect nodules in a CT scan and subsequently to classify them as being benign, malignant or metastases. Only the classification code is completely finished for use, for the detection part most of the code is availble but there are not pretrained models available for use.
+
 
 The classification approach I used in my thesis is shown in the figure below. In the top part a neural net is trained using the [LIDC-IDRI database](https://wiki.cancerimagingarchive.net/display/Public/LIDC-IDRI), resulting in malignancy scores for lung nodules. This trained network can subsequently be used as feature extractor for a new dataset (bottom row), and these features can then be classified with a SVM. The code in this github is to apply the pretrained network to a new dataset, thus the bottom row of the figure. 
 
